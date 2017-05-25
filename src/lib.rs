@@ -89,16 +89,16 @@ impl Language {
 /// let user_languages = parse("en-US, en-GB;q=0.5");
 /// ```
 pub fn parse(raw_languages: &str) -> Vec<String> {
-    let languages_string = raw_languages.clone().replace(" ", "");
-    let languages_str_parts: Vec<&str> = languages_string.split(",").collect();
-    let mut languages_string_parts: Vec<Language> = languages_str_parts
+    let stripped_languages = raw_languages.clone().replace(" ", "");
+    let language_strings: Vec<&str> = stripped_languages.split(",").collect();
+    let mut languages: Vec<Language> = language_strings
         .iter()
         .map(|l| Language::new(l))
         .collect();
 
-    languages_string_parts.sort();
+    languages.sort();
 
-    languages_string_parts
+    languages
         .iter()
         .map(|ref l| l.name.to_owned())
         .filter(|l| !l.is_empty())
