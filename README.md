@@ -1,10 +1,27 @@
 # accept-language
 
-> a tiny library for parsing the Accept-Language header from browsers (as defined [here](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html))
+> A tiny library for parsing the Accept-Language header from browsers (as defined [here](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html))
 
 # Usage
 
+`accept-language` is intended to be used by a webserver, probably to decide which languages to serve up to the user based on their preferred language and the languages your application supports.
+
+At it's most basic, it looks like this
+
+```rust
+extern crate accept_language;
+
+use accept_language::{intersection, parse};
+
+let user_languages = parse("en-US, en-GB;q=0.5");
+let common_languages = intersection("en-US, en-GB;q=0.5", vec!["en-US", "de", "en-GB"]);
+```
+
+For more info and to view the full documentation, check them out on [docs.rs](https://docs.rs/accept-language).
+
 # Contributing
+
+Contributions are always welcome! If you found a bug, please submit an issue. If you'd like to submit a patch or feature, feel free to submit a pull request. [rustfmt](https://github.com/rust-lang-nursery/rustfmt) should be used to have consistent code formatting throughout the project.
 
 # [Code of Conduct](CODE_OF_CONDUCT.md)
 
