@@ -2,7 +2,7 @@
 name = "accept-language"
 description = "Parse and compare Accept-Language header strings"
 readme = "README.md"
-repository = "https://github.com/mike-engel/accept-language"
+repository = "https://github.com/mike-engel/accept-language-rs"
 documentation = "https://docs.rs/accept-language"
 license = "MIT"
 keywords = ["accept-language", "i18n", "internationalization", "header", "parser"]
