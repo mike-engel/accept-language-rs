@@ -6,8 +6,8 @@ repository = "https://github.com/mike-engel/accept-language-rs"
 documentation = "https://docs.rs/accept-language"
 license = "MIT"
 keywords = ["accept-language", "i18n", "internationalization", "header", "parser"]
-categories = ["parsing", "web-programming::http-server"]
-version = "1.0.1"
+categories = ["parsing"]
+version = "1.1.0"
 authors = ["Mike Engel <mike@mike-engel.com>"]
 
 [dependencies]

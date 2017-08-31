@@ -1,4 +1,14 @@
-# 1.0.2
+# 1.1.0
+> 2017-08-30
+
+Capitalization updates
+
+#### Minor changes
+- languages that come accross as all lowercase (e.g. "en-us") will be properly capitalized (e.g. "en-US")
+- Minor refactor to avoid mutability!
+- Remove a cargo category that doesn't make sense anymore
+
+# 1.0.1
 > 2017-08-25
 
 Metadata and Readme updates
