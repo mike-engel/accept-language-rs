@@ -14,9 +14,9 @@
 //! let user_languages = parse("en-US, en-GB;q=0.5");
 //! let common_languages = intersection("en-US, en-GB;q=0.5", vec!["en-US", "de", "en-GB"]);
 //! ```
+use std::cmp::Ordering;
 use std::str;
 use std::str::FromStr;
-use std::cmp::Ordering;
 
 #[derive(Debug)]
 struct Language {
@@ -59,10 +59,8 @@ impl Language {
                 let name_parts: Vec<&str> = tag_parts[0].split("-").collect();
 
                 match name_parts.len() {
-                    2 => {
-                        (name_parts[0].to_owned() + "-" + name_parts[1].to_uppercase().as_str())
-                            .to_string()
-                    }
+                    2 => (name_parts[0].to_owned() + "-" + name_parts[1].to_uppercase().as_str())
+                        .to_string(),
                     _ => tag_parts[0].to_string(),
                 }
             }
@@ -79,11 +77,14 @@ impl Language {
     }
 
     fn quality_with_default(raw_quality: &str) -> f64 {
-        let quality_str = &raw_quality[2..];
+        let quality_parts: Vec<&str> = raw_quality.split("=").collect();
 
-        match f64::from_str(&quality_str) {
-            Ok(q) => q,
-            Err(_) => 0.0,
+        match quality_parts.len() {
+            2 => match f64::from_str(quality_parts[1]) {
+                Ok(q) => q,
+                Err(_) => 0.0,
+            },
+            _ => 0.0,
         }
     }
 }
@@ -135,7 +136,7 @@ pub fn intersection(raw_languages: &str, supported_languages: Vec<&str>) -> Vec<
 
 #[cfg(test)]
 mod tests {
-    use super::{intersection, Language, parse};
+    use super::{intersection, parse, Language};
 
     static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, jp;q=0.1";
 
@@ -211,6 +212,19 @@ mod tests {
         let user_languages = parse("");
 
         assert_eq!(user_languages.len(), 0)
+    }
+
+    #[test]
+    fn it_parses_an_invalid_accept_language_header() {
+        let user_languages_one = parse("q");
+        let user_languages_two = parse(";q");
+        let user_languages_three = parse("q-");
+        let user_languages_four = parse("en;q=");
+
+        assert_eq!(user_languages_one, vec![String::from("q")]);
+        assert_eq!(user_languages_two.len(), 0);
+        assert_eq!(user_languages_three, vec![String::from("q-")]);
+        assert_eq!(user_languages_four, vec![String::from("en")])
     }
 
     #[test]
