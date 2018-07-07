@@ -55,15 +55,7 @@ impl Language {
         let tag_parts: Vec<&str> = tag.split(";").collect();
         let name = match tag_parts.len() {
             0 => String::from(""),
-            _ => {
-                let name_parts: Vec<&str> = tag_parts[0].split("-").collect();
-
-                match name_parts.len() {
-                    2 => (name_parts[0].to_owned() + "-" + name_parts[1].to_uppercase().as_str())
-                        .to_string(),
-                    _ => tag_parts[0].to_string(),
-                }
-            }
+            _ => tag_parts[0].to_string(),
         };
         let quality = match tag_parts.len() {
             1 => 1.0,
@@ -256,5 +248,10 @@ mod tests {
         let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, vec!["fr", "en-GB"]);
 
         assert_eq!(common_languages.len(), 0)
+    }
+
+    #[test]
+    fn it_parses_traditional_chinese() {
+        assert_eq!(parse("zh-Hant"), vec!["zh-Hant"]);
     }
 }
