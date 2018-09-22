@@ -1,3 +1,20 @@
+# 1.2.1
+
+> 2018-09-22
+
+#### Bug fixes
+
+- accept-language-rs is now testing with cargo-fuzz. You can find the test results in the [README.md](README.md) file
+- Compile and test with the latest version of stable rust
+
+# 1.2.0
+
+> 2018-07-07
+
+#### Minor changes
+
+- Don't auto-capitalize language codes [[#3](https://github.com/mike-engel/accept-language-rs/pull/3)]
+
 # 1.1.1
 
 > 2018-06-23

@@ -19,6 +19,26 @@ let common_languages = intersection("en-US, en-GB;q=0.5", vec!["en-US", "de", "e
 
 For more info and to view the full documentation, check them out on [docs.rs](https://docs.rs/accept-language).
 
+# Stability
+
+`accept-language` is fuzz tested with [`cargo-fuzz`](). As of `1.2.1`, these are the results of both fuzz tests for `parse` and `intersection` respectively.
+
+**`parse`**
+
+```sh
+cargo fuzz run -O parse -- -max_total_time=60
+...
+Done 926619 runs in 61 second(s)
+```
+
+**`intersection`**
+
+```sh
+cargo fuzz run -O intersection -- -max_total_time=60
+...
+Done 846914 runs in 61 second(s)
+```
+
 # Contributing
 
 Contributions are always welcome! If you found a bug, please submit an issue. If you'd like to submit a patch or feature, feel free to submit a pull request. [rustfmt](https://github.com/rust-lang-nursery/rustfmt) should be used to have consistent code formatting throughout the project.

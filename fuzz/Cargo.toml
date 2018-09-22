@@ -1,0 +1,26 @@
+
+[package]
+name = "accept-language-fuzz"
+version = "1.0.0"
+authors = ["Automatically generated"]
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies.accept-language]
+path = ".."
+[dependencies.libfuzzer-sys]
+git = "https://github.com/rust-fuzz/libfuzzer-sys.git"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "parse"
+path = "fuzz_targets/parse.rs"
+
+[[bin]]
+name = "intersection"
+path = "fuzz_targets/intersection.rs"
