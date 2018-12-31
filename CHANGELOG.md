@@ -1,3 +1,11 @@
+# 1.2.2
+
+> 2018-12-31
+
+#### Bug fixes
+
+- Update the category to a more appropriate one for crates.io
+
 # 1.2.1
 
 > 2018-09-22
