@@ -1,3 +1,11 @@
+# 2.0.0
+
+> 2019-01-10
+
+#### Breaking changes (maybe)
+
+- Update to use the 2018 edition
+
 # 1.2.2
 
 > 2018-12-31
