@@ -55,6 +55,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "neosilky",
+      "name": "Daniel Lockyer",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/964245?v=4",
+      "profile": "https://daniellockyer.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
