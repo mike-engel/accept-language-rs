@@ -26,6 +26,15 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "LukasKalbertodt",
+      "name": "Lukas Kalbertodt",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7419664?v=4",
+      "profile": "http://lukaskalbertodt.github.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

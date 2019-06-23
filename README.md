@@ -60,6 +60,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://www.mike-engel.com"><img src="https://avatars0.githubusercontent.com/u/464447?v=4" width="100px;" alt="Mike Engel"/><br /><sub><b>Mike Engel</b></sub></a><br /><a href="https://github.com/mike-engel/accept-language-rs/issues?q=author%3Amike-engel" title="Bug reports">🐛</a> <a href="#question-mike-engel" title="Answering Questions">💬</a> <a href="https://github.com/mike-engel/accept-language-rs/commits?author=mike-engel" title="Code">💻</a> <a href="https://github.com/mike-engel/accept-language-rs/commits?author=mike-engel" title="Documentation">📖</a> <a href="#design-mike-engel" title="Design">🎨</a> <a href="#ideas-mike-engel" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-mike-engel" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#review-mike-engel" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/mike-engel/accept-language-rs/commits?author=mike-engel" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://lukaskalbertodt.github.io/"><img src="https://avatars1.githubusercontent.com/u/7419664?v=4" width="100px;" alt="Lukas Kalbertodt"/><br /><sub><b>Lukas Kalbertodt</b></sub></a><br /><a href="https://github.com/mike-engel/accept-language-rs/commits?author=LukasKalbertodt" title="Code">💻</a></td>
   </tr>
 </table>
 
