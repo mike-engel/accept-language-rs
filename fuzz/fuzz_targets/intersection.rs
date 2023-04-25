@@ -6,6 +6,6 @@ extern crate accept_language;
 #[cfg_attr(rustfmt, rustfmt_skip)]
 fuzz_target!(|data: &[u8]| {
   if let Ok(s) = std::str::from_utf8(data) {
-    accept_language::intersection(s, vec!["en-US", "en", "de-DE"]);
+    accept_language::intersection(s, &["en-US", "en", "de-DE"]);
   }
 });

@@ -12,7 +12,7 @@
 //! use accept_language::{intersection, parse};
 //!
 //! let user_languages = parse("en-US, en-GB;q=0.5");
-//! let common_languages = intersection("en-US, en-GB;q=0.5", vec!["en-US", "de", "en-GB"]);
+//! let common_languages = intersection("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
 //! ```
 use std::cmp::Ordering;
 use std::str;
@@ -113,9 +113,9 @@ pub fn parse(raw_languages: &str) -> Vec<String> {
 /// ```
 /// use accept_language::intersection;
 ///
-/// let common_languages = intersection("en-US, en-GB;q=0.5", vec!["en-US", "de", "en-GB"]);
+/// let common_languages = intersection("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
 /// ```
-pub fn intersection(raw_languages: &str, supported_languages: Vec<&str>) -> Vec<String> {
+pub fn intersection(raw_languages: &str, supported_languages: &[&str]) -> Vec<String> {
     let user_languages = parse(raw_languages);
     let intersection = user_languages
         .into_iter()
@@ -235,7 +235,7 @@ mod tests {
 
     #[test]
     fn it_returns_language_intersections() {
-        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, vec!["en-US", "jp"]);
+        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
 
         assert_eq!(
             common_languages,
@@ -245,13 +245,13 @@ mod tests {
 
     #[test]
     fn it_returns_an_empty_array_when_no_intersections() {
-        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, vec!["fr", "en-GB"]);
+        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, &["fr", "en-GB"]);
 
         assert_eq!(common_languages.len(), 0)
     }
 
     #[test]
     fn it_parses_traditional_chinese() {
-        assert_eq!(parse("zh-Hant"), vec!["zh-Hant"]);
+        assert_eq!(parse("zh-Hant"), &["zh-Hant"]);
     }
 }
