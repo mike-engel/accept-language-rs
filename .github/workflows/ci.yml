@@ -1,0 +1,73 @@
+on: [push, pull_request]
+name: Continuous Integration
+
+jobs:
+  test:
+    name: Test Suite on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        rust: [stable]
+        include:
+          - os: macos-latest
+            artifact_prefix: macOS
+            target: x86_64-apple-darwin
+            binary_postfix: ""
+          - os: ubuntu-latest
+            artifact_prefix: linux
+            target: x86_64-unknown-linux-gnu
+            binary_postfix: ""
+          - os: windows-latest
+            artifact_prefix: windows
+            target: x86_64-pc-windows-msvc
+            binary_postfix: ".exe"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run tests
+        run: cargo test
+
+  rustfmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rustfmt
+        run: rustup component add rustfmt
+      - name: Check formatting
+        run: cargo fmt --all --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install clippy
+        run: rustup component add clippy
+      - name: Clippy Check
+        run: cargo clippy -- -D warnings
+
+  fuzz:
+    name: Fuzz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz
+      - name: Run fuzz parse suite
+        run: cargo fuzz run -O parse -- -max_total_time=60
+      - name: Run fuzz intersection suite
+        run: cargo fuzz run -O intersection -- -max_total_time=60

@@ -4,7 +4,7 @@
 
 # Usage
 
-`accept-language` is intended to be used by a webserver, probably to decide which languages to serve up to the user based on their preferred language and the languages your application supports.
+`accept-language` is intended to be used by a web server, probably to decide which languages to serve up to the user based on their preferred language and the languages your application supports.
 
 At it's most basic, it looks like this
 
@@ -21,23 +21,7 @@ For more info and to view the full documentation, check them out on [docs.rs](ht
 
 # Stability
 
-`accept-language` is fuzz tested with [`cargo-fuzz`](). As of `1.2.1`, these are the results of both fuzz tests for `parse` and `intersection` respectively.
-
-**`parse`**
-
-```sh
-cargo fuzz run -O parse -- -max_total_time=60
-...
-Done 926619 runs in 61 second(s)
-```
-
-**`intersection`**
-
-```sh
-cargo fuzz run -O intersection -- -max_total_time=60
-...
-Done 846914 runs in 61 second(s)
-```
+`accept-language` is fuzz tested with [`cargo-fuzz`](https://github.com/rust-fuzz/cargo-fuzz) on every PR and push via GitHub actions.
 
 # Contributing
 
