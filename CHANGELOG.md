@@ -1,3 +1,11 @@
+# 3.0.0
+
+> 2023-06-23
+
+#### Breaking changes
+
+- The list of supported languages is now a reference type rather than a `Vec` #8
+
 # 2.0.0
 
 > 2019-01-10
