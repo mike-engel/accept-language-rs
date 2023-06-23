@@ -1,3 +1,17 @@
+# 3.0.1
+
+> 2023-06-23
+
+#### Features
+
+- Add CI pipeline to run tests, check for clippy warnings, and fuzz both parse and intersection functions
+
+#### Bug fixes
+
+- Fix clippy warnings
+- Fix README
+- Compare language name (case insensitive) with partial equality
+
 # 3.0.0
 
 > 2023-06-23

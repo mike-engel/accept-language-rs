@@ -4,4 +4,4 @@ version = 3
 
 [[package]]
 name = "accept-language"
-version = "3.0.0"
+version = "3.0.1"
