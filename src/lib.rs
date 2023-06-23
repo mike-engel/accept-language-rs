@@ -1,6 +1,6 @@
 //! `accept-language` is a tiny library for parsing the Accept-Language header from browsers (as defined [here](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)).
 //!
-//! It's intended to be used in a webserver that supports some level of internationalization (i18n),
+//! It's intended to be used in a web server that supports some level of internationalization (i18n),
 //! but can be used anytime an Accept-Language header string is available.
 //!
 //! In order to help facilitate better i18n, a function is provided to return the intersection of
@@ -46,7 +46,7 @@ impl PartialOrd for Language {
 
 impl PartialEq for Language {
     fn eq(&self, other: &Language) -> bool {
-        self.quality == other.quality
+        self.quality == other.quality && self.name.to_lowercase() == other.name.to_lowercase()
     }
 }
 
@@ -92,7 +92,7 @@ impl Language {
 /// let user_languages = parse("en-US, en-GB;q=0.5");
 /// ```
 pub fn parse(raw_languages: &str) -> Vec<String> {
-    let stripped_languages = raw_languages.clone().replace(" ", "");
+    let stripped_languages = raw_languages.to_owned().replace(" ", "");
     let language_strings: Vec<&str> = stripped_languages.split(",").collect();
     let mut languages: Vec<Language> = language_strings.iter().map(|l| Language::new(l)).collect();
 
@@ -253,5 +253,14 @@ mod tests {
     #[test]
     fn it_parses_traditional_chinese() {
         assert_eq!(parse("zh-Hant"), &["zh-Hant"]);
+    }
+
+    #[test]
+    fn it_implements_case_insensitive_equality() {
+        assert_eq!(Language::new("en-US"), Language::new("en-us"));
+        assert_eq!(Language::new("en-US;q=0.7"), Language::new("en-us;q=0.7"));
+        assert_ne!(Language::new("en"), Language::new("en-US"));
+        assert_ne!(Language::new("en;q=0.7"), Language::new("en;q=0.8"));
+        assert_ne!(Language::new("en;q=0.7"), Language::new("en-US;q=0.7"));
     }
 }
