@@ -52,7 +52,7 @@ impl PartialEq for Language {
 
 impl Language {
     fn new(tag: &str) -> Language {
-        let tag_parts: Vec<&str> = tag.split(";").collect();
+        let tag_parts: Vec<&str> = tag.split(';').collect();
         let name = match tag_parts.len() {
             0 => String::from(""),
             _ => tag_parts[0].to_string(),
@@ -62,20 +62,14 @@ impl Language {
             _ => Language::quality_with_default(tag_parts[1]),
         };
 
-        Language {
-            name: name,
-            quality: quality,
-        }
+        Language { name, quality }
     }
 
     fn quality_with_default(raw_quality: &str) -> f64 {
-        let quality_parts: Vec<&str> = raw_quality.split("=").collect();
+        let quality_parts: Vec<&str> = raw_quality.split('=').collect();
 
         match quality_parts.len() {
-            2 => match f64::from_str(quality_parts[1]) {
-                Ok(q) => q,
-                Err(_) => 0.0,
-            },
+            2 => f64::from_str(quality_parts[1]).unwrap_or(0.0),
             _ => 0.0,
         }
     }
@@ -92,15 +86,15 @@ impl Language {
 /// let user_languages = parse("en-US, en-GB;q=0.5");
 /// ```
 pub fn parse(raw_languages: &str) -> Vec<String> {
-    let stripped_languages = raw_languages.to_owned().replace(" ", "");
-    let language_strings: Vec<&str> = stripped_languages.split(",").collect();
+    let stripped_languages = raw_languages.to_owned().replace(' ', "");
+    let language_strings: Vec<&str> = stripped_languages.split(',').collect();
     let mut languages: Vec<Language> = language_strings.iter().map(|l| Language::new(l)).collect();
 
     languages.sort();
 
     languages
         .iter()
-        .map(|ref l| l.name.to_owned())
+        .map(|l| l.name.to_owned())
         .filter(|l| !l.is_empty())
         .collect()
 }
@@ -117,13 +111,11 @@ pub fn parse(raw_languages: &str) -> Vec<String> {
 /// ```
 pub fn intersection(raw_languages: &str, supported_languages: &[&str]) -> Vec<String> {
     let user_languages = parse(raw_languages);
-    let intersection = user_languages
+
+    user_languages
         .into_iter()
         .filter(|l| supported_languages.contains(&l.as_str()))
-        .map(|l| l.to_string())
-        .collect();
-
-    intersection
+        .collect()
 }
 
 #[cfg(test)]
