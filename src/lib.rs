@@ -14,6 +14,8 @@
 //! let user_languages = parse("en-US, en-GB;q=0.5");
 //! let common_languages = intersection("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
 //! ```
+#![feature(test)]
+extern crate test;
 use std::cmp::Ordering;
 use std::str;
 use std::str::FromStr;
@@ -21,7 +23,7 @@ use std::str::FromStr;
 #[derive(Debug)]
 struct Language {
     name: String,
-    quality: f64,
+    quality: f32,
 }
 
 impl Eq for Language {}
@@ -65,11 +67,11 @@ impl Language {
         Language { name, quality }
     }
 
-    fn quality_with_default(raw_quality: &str) -> f64 {
+    fn quality_with_default(raw_quality: &str) -> f32 {
         let quality_parts: Vec<&str> = raw_quality.split('=').collect();
 
         match quality_parts.len() {
-            2 => f64::from_str(quality_parts[1]).unwrap_or(0.0),
+            2 => f32::from_str(quality_parts[1]).unwrap_or(0.0),
             _ => 0.0,
         }
     }
@@ -111,18 +113,54 @@ pub fn parse(raw_languages: &str) -> Vec<String> {
 /// ```
 pub fn intersection(raw_languages: &str, supported_languages: &[&str]) -> Vec<String> {
     let user_languages = parse(raw_languages);
-
     user_languages
         .into_iter()
         .filter(|l| supported_languages.contains(&l.as_str()))
         .collect()
 }
 
+/// Compare an Accept-Language header value with your application's supported languages,
+/// which MUST be in alphabetical order, to find the common languages that could be presented
+/// to a user. Executes roughly 25% faster.
+///
+/// # Example
+///
+/// ```
+/// use accept_language::intersection_ordered;
+///
+/// let common_languages = intersection_ordered("en-US, en-GB;q=0.5", &["de", "en-GB", "en-US"]);
+/// ```
+pub fn intersection_ordered(raw_languages: &str, supported_languages: &[&str]) -> Vec<String> {
+    let user_languages = parse(raw_languages);
+
+    user_languages
+        .into_iter()
+        .filter(|l| supported_languages.binary_search(&l.as_str()).is_ok())
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{intersection, parse, Language};
+    use super::{intersection, intersection_ordered, parse, Language};
+    use test::Bencher;
 
-    static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, jp;q=0.1";
+    static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, zh-Hant, jp;q=0.1";
+    static AVIALABLE_LANGUAGES: &[&str] = &[
+        "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az", "ba", "be", "bg",
+        "bh", "bi", "bm", "bn", "bo", "br", "bs", "ca", "ce", "ch", "co", "cr", "cs", "cu", "cv",
+        "cy", "da", "de", "dv", "dz", "ee", "el", "en", "en-UK", "en-US", "eo", "es", "es-ar",
+        "et", "eu", "fa", "ff", "fi", "fj", "fo", "fr", "fy", "ga", "gd", "gl", "gn", "gu", "gv",
+        "gv", "ha", "he", "hi", "ho", "hr", "ht", "hu", "hy", "hz", "ia", "id", "ie", "ig", "ii",
+        "ii", "ik", "in", "io", "is", "it", "iu", "ja", "jp", "jv", "ka", "kg", "ki", "kj", "kk",
+        "kl", "kl", "km", "kn", "ko", "kr", "ks", "ku", "kv", "kw", "ky", "la", "lb", "lg", "li",
+        "ln", "lo", "lt", "lu", "lv", "mg", "mh", "mi", "mk", "ml", "mn", "mo", "mr", "ms", "mt",
+        "my", "na", "nb", "nd", "ne", "ng", "nl", "nn", "no", "nr", "nv", "ny", "oc", "oj", "om",
+        "or", "os", "pa", "pi", "pl", "ps", "pt", "qu", "rm", "rn", "ro", "ru", "rw", "sa", "sd",
+        "se", "sg", "sh", "si", "sk", "sl", "sm", "sn", "so", "sq", "sr", "ss", "ss", "st", "su",
+        "sv", "sw", "ta", "te", "tg", "th", "ti", "tk", "tl", "tn", "to", "tr", "ts", "tt", "tw",
+        "ty", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "wa", "wo", "xh", "yi", "yo", "za", "zh",
+        "zh-Hans", "zh-Hant", "zu",
+    ];
 
     #[test]
     fn it_creates_a_new_language_from_a_string() {
@@ -185,6 +223,7 @@ mod tests {
             user_languages,
             vec![
                 String::from("en-US"),
+                String::from("zh-Hant"),
                 String::from("de"),
                 String::from("jp"),
             ]
@@ -227,12 +266,42 @@ mod tests {
 
     #[test]
     fn it_returns_language_intersections() {
-        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
+        let common_languages = intersection(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES);
 
         assert_eq!(
             common_languages,
-            vec![String::from("en-US"), String::from("jp")]
+            vec![
+                String::from("en-US"),
+                String::from("zh-Hant"),
+                String::from("de"),
+                String::from("jp")
+            ]
         )
+    }
+
+    #[test]
+    fn it_returns_language_intersections_ordered() {
+        let common_languages = intersection_ordered(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES);
+
+        assert_eq!(
+            common_languages,
+            vec![
+                String::from("en-US"),
+                String::from("zh-Hant"),
+                String::from("de"),
+                String::from("jp")
+            ]
+        )
+    }
+
+    #[bench]
+    fn bench_intersections(b: &mut Bencher) {
+        b.iter(|| it_returns_language_intersections());
+    }
+
+    #[bench]
+    fn bench_intersections_ordered(b: &mut Bencher) {
+        b.iter(|| it_returns_language_intersections_ordered());
     }
 
     #[test]
