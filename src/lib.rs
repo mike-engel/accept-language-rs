@@ -55,10 +55,7 @@ impl PartialEq for Language {
 impl Language {
     fn new(tag: &str) -> Language {
         let tag_parts: Vec<&str> = tag.split(';').collect();
-        let name = match tag_parts.len() {
-            0 => String::from(""),
-            _ => tag_parts[0].to_string(),
-        };
+        let name = tag_parts[0].to_string();
         let quality = match tag_parts.len() {
             1 => 1.0,
             _ => Language::quality_with_default(tag_parts[1]),
