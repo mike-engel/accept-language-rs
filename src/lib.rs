@@ -96,6 +96,30 @@ pub fn parse(raw_languages: &str) -> Vec<String> {
         .collect()
 }
 
+/// Similar to [`parse`](parse) but with boolean appended to notice if it is a default value.
+/// is used by [`intersection_verify_default`](intersection_verify_default).
+///
+/// # Example
+///
+/// ```
+/// use accept_language::parse_verify_default;
+///
+/// let user_languages = parse_verify_default("en-US, en-GB;q=0.5");
+/// assert_eq!(user_languages,vec![(String::from("en-US"), true), (String::from("en-GB"), false)])
+/// ```
+pub fn parse_verify_default(raw_languages: &str) -> Vec<(String, bool)> {
+    let stripped_languages = raw_languages.to_owned().replace(' ', "");
+    let language_strings: Vec<&str> = stripped_languages.split(',').collect();
+    let mut languages: Vec<Language> = language_strings.iter().map(|l| Language::new(l)).collect();
+
+    languages.sort();
+    languages
+        .iter()
+        .map(|l| (l.name.to_owned(), l.quality.eq(&1.0)))
+        .filter(|l| !l.0.is_empty())
+        .collect()
+}
+
 /// Compare an Accept-Language header value with your application's supported languages to find
 /// the common languages that could be presented to a user.
 ///
@@ -114,10 +138,34 @@ pub fn intersection(raw_languages: &str, supported_languages: &[&str]) -> Vec<St
         .filter(|l| supported_languages.contains(&l.as_str()))
         .collect()
 }
+/// Similar to [`intersection`](intersection) but with boolean appended to notice
+/// if it is a default value. This enables distinction between the default language and the
+/// best match. If you don't want to assign your users to a non-default choice and you add
+/// more languages later on in your webserver.
+///
+/// # Example
+///
+/// ```
+/// use accept_language::intersection_verify_default;
+///
+/// let common_languages = intersection_verify_default("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
+/// assert_eq!(common_languages,vec![(String::from("en-US"), true), (String::from("en-GB"), false)])
+/// ```
+pub fn intersection_verify_default(
+    raw_languages: &str,
+    supported_languages: &[&str],
+) -> Vec<(String, bool)> {
+    let user_languages = parse_verify_default(raw_languages);
+
+    user_languages
+        .into_iter()
+        .filter(|l| supported_languages.contains(&l.0.as_str()))
+        .collect()
+}
 
 #[cfg(test)]
 mod tests {
-    use super::{intersection, parse, Language};
+    use super::{intersection, intersection_verify_default, parse, Language};
 
     static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, jp;q=0.1";
 
@@ -229,6 +277,16 @@ mod tests {
         assert_eq!(
             common_languages,
             vec![String::from("en-US"), String::from("jp")]
+        )
+    }
+
+    #[test]
+    fn it_returns_language_intersections_verify_default() {
+        let common_languages = intersection_verify_default(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
+
+        assert_eq!(
+            common_languages,
+            vec![(String::from("en-US"), true), (String::from("jp"), false)]
         )
     }
 
