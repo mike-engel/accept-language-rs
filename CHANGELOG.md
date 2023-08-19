@@ -1,3 +1,15 @@
+# 3.1.0
+
+> 2023-08-19
+
+#### Features
+
+- Add functions to return quality with results and binary-sort-optimized functions for speed #12
+
+#### Big fixes
+
+- Avoid never used call to create an empty string #11
+
 # 3.0.1
 
 > 2023-06-23
@@ -70,7 +82,7 @@ Capitalization updates
 
 #### Minor changes
 
-- languages that come accross as all lowercase (e.g. "en-us") will be properly capitalized (e.g. "en-US")
+- languages that come across as all lowercase (e.g. "en-us") will be properly capitalized (e.g. "en-US")
 - Minor refactor to avoid mutability!
 - Remove a cargo category that doesn't make sense anymore
 

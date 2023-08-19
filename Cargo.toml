@@ -7,7 +7,7 @@ documentation = "https://docs.rs/accept-language"
 license = "MIT"
 keywords = ["accept-language", "i18n", "internationalization", "header", "parser"]
 categories = ["parser-implementations"]
-version = "3.0.1"
+version = "3.1.0"
 authors = ["Mike Engel <mike@mike-engel.com>", "Sean Stangl"]
 edition = "2018"
 
