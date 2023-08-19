@@ -64,6 +64,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "peter-scholtens",
+      "name": "Peter C. S. Scholtens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7198614?v=4",
+      "profile": "https://github.com/peter-scholtens",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
