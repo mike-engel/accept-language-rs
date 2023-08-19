@@ -6,7 +6,7 @@
 
 - Add functions to return quality with results and binary-sort-optimized functions for speed #12
 
-#### Big fixes
+#### Bug fixes
 
 - Avoid never used call to create an empty string #11
 
