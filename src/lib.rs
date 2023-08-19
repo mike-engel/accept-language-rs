@@ -94,18 +94,18 @@ pub fn parse(raw_languages: &str) -> Vec<String> {
 }
 
 /// Similar to [`parse`](parse) but with quality `f32` appended to notice if it is a default value.
-/// is used by [`intersection_with_qualification`](intersection_with_qualification) and
-/// [`intersection_ordered_with_qualification`](intersection_ordered_with_qualification).
+/// is used by [`intersection_with_quality`](intersection_with_quality) and
+/// [`intersection_ordered_with_quality`](intersection_ordered_with_quality).
 ///
 /// # Example
 ///
 /// ```
-/// use accept_language::parse_with_qualification;
+/// use accept_language::parse_with_quality;
 ///
-/// let user_languages = parse_with_qualification("en-US, en-GB;q=0.5");
+/// let user_languages = parse_with_quality("en-US, en-GB;q=0.5");
 /// assert_eq!(user_languages,vec![(String::from("en-US"), 1.0), (String::from("en-GB"), 0.5)])
 /// ```
-pub fn parse_with_qualification(raw_languages: &str) -> Vec<(String, f32)> {
+pub fn parse_with_quality(raw_languages: &str) -> Vec<(String, f32)> {
     let stripped_languages = raw_languages.to_owned().replace(' ', "");
     let language_strings: Vec<&str> = stripped_languages.split(',').collect();
     let mut languages: Vec<Language> = language_strings.iter().map(|l| Language::new(l)).collect();
@@ -113,6 +113,7 @@ pub fn parse_with_qualification(raw_languages: &str) -> Vec<(String, f32)> {
     languages
         .iter()
         .map(|l| (l.name.to_owned(), l.quality))
+        .filter(|l| !l.0.is_empty())
         .collect()
 }
 
@@ -159,39 +160,39 @@ pub fn intersection_ordered(raw_languages: &str, supported_languages: &[&str]) -
 /// # Example
 ///
 /// ```
-/// use accept_language::intersection_with_qualification;
+/// use accept_language::intersection_with_quality;
 ///
-/// let common_languages = intersection_with_qualification("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
+/// let common_languages = intersection_with_quality("en-US, en-GB;q=0.5", &["en-US", "de", "en-GB"]);
 /// assert_eq!(common_languages,vec![(String::from("en-US"), 1.0), (String::from("en-GB"), 0.5)])
 /// ```
-pub fn intersection_with_qualification(
+pub fn intersection_with_quality(
     raw_languages: &str,
     supported_languages: &[&str],
 ) -> Vec<(String, f32)> {
-    let user_languages = parse_with_qualification(raw_languages);
+    let user_languages = parse_with_quality(raw_languages);
     user_languages
         .into_iter()
         .filter(|l| supported_languages.contains(&l.0.as_str()))
         .collect()
 }
 
-/// Similar to [`intersection_with_qualification`](intersection_with_qualification). The supported languages MUST
+/// Similar to [`intersection_with_quality`](intersection_with_quality). The supported languages MUST
 /// be in alphabetical order, to find the common languages that could be presented to a user.
 /// Executes roughly 25% faster.
 ///
 /// # Example
 ///
 /// ```
-/// use accept_language::intersection_ordered_with_qualification;
+/// use accept_language::intersection_ordered_with_quality;
 ///
-/// let common_languages = intersection_ordered_with_qualification("en-US, en-GB;q=0.5", &["de", "en-GB", "en-US"]);
+/// let common_languages = intersection_ordered_with_quality("en-US, en-GB;q=0.5", &["de", "en-GB", "en-US"]);
 /// assert_eq!(common_languages,vec![(String::from("en-US"), 1.0), (String::from("en-GB"), 0.5)])
 /// ```
-pub fn intersection_ordered_with_qualification(
+pub fn intersection_ordered_with_quality(
     raw_languages: &str,
     supported_languages: &[&str],
 ) -> Vec<(String, f32)> {
-    let user_languages = parse_with_qualification(raw_languages);
+    let user_languages = parse_with_quality(raw_languages);
     user_languages
         .into_iter()
         .filter(|l| supported_languages.binary_search(&l.0.as_str()).is_ok())
@@ -201,8 +202,8 @@ pub fn intersection_ordered_with_qualification(
 #[cfg(test)]
 mod tests {
     use super::{
-        intersection, intersection_ordered, intersection_ordered_with_qualification,
-        intersection_with_qualification, parse, Language,
+        intersection, intersection_ordered, intersection_ordered_with_quality,
+        intersection_with_quality, parse, Language,
     };
 
     static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, zh-Hant, jp;q=0.1";
@@ -331,9 +332,9 @@ mod tests {
     }
 
     #[test]
-    fn it_returns_language_intersection_with_qualification() {
+    fn it_returns_language_intersection_with_quality() {
         let common_languages =
-            intersection_with_qualification(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
+            intersection_with_quality(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
         assert_eq!(
             common_languages,
             vec![(String::from("en-US"), 1.0), (String::from("jp"), 0.1)]
@@ -341,9 +342,9 @@ mod tests {
     }
 
     #[test]
-    fn it_returns_language_intersection_ordered_with_qualification() {
+    fn it_returns_language_intersection_ordered_with_quality() {
         let common_languages =
-            intersection_ordered_with_qualification(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
+            intersection_ordered_with_quality(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
         assert_eq!(
             common_languages,
             vec![(String::from("en-US"), 1.0), (String::from("jp"), 0.1)]
