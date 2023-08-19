@@ -333,8 +333,7 @@ mod tests {
 
     #[test]
     fn it_returns_language_intersection_with_quality() {
-        let common_languages =
-            intersection_with_quality(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
+        let common_languages = intersection_with_quality(MOCK_ACCEPT_LANGUAGE, &["en-US", "jp"]);
         assert_eq!(
             common_languages,
             vec![(String::from("en-US"), 1.0), (String::from("jp"), 0.1)]
