@@ -7,7 +7,7 @@ mod benches {
     use super::accept_language::*;
     use test::Bencher;
 
-    static MOCK_ACCEPT_LANGUAGE: &str = "en-US, de;q=0.7, zh-Hant, jp;q=0.1";
+    static MOCK_ACCEPT_LANGUAGE: &str = "en-US, nl, fr; q=0.3, de;q=0.7, zh-Hant: q=0.01, jp;q=0.1";
     static AVIALABLE_LANGUAGES: &[&str] = &[
         "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az", "ba", "be", "bg",
         "bh", "bi", "bm", "bn", "bo", "br", "bs", "ca", "ce", "ch", "co", "cr", "cs", "cu", "cv",
@@ -26,6 +26,16 @@ mod benches {
     ];
 
     #[bench]
+    fn bench_parse(b: &mut Bencher) {
+        b.iter(|| parse(MOCK_ACCEPT_LANGUAGE));
+    }
+
+    #[bench]
+    fn bench_parse_with_quality(b: &mut Bencher) {
+        b.iter(|| parse_with_quality(MOCK_ACCEPT_LANGUAGE));
+    }
+
+    #[bench]
     fn bench_intersections(b: &mut Bencher) {
         b.iter(|| intersection(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES));
     }
@@ -33,5 +43,15 @@ mod benches {
     #[bench]
     fn bench_intersections_ordered(b: &mut Bencher) {
         b.iter(|| intersection_ordered(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES));
+    }
+
+    #[bench]
+    fn bench_intersections_with_quality(b: &mut Bencher) {
+        b.iter(|| intersection_with_quality(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES));
+    }
+
+    #[bench]
+    fn bench_intersections_ordered_with_quality(b: &mut Bencher) {
+        b.iter(|| intersection_ordered_with_quality(MOCK_ACCEPT_LANGUAGE, AVIALABLE_LANGUAGES));
     }
 }
